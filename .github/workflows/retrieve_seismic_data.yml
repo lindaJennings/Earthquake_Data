@@ -1,0 +1,41 @@
+name: Retrieve Seismic Data
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Runs daily at midnight UTC
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures all branches are fetched
+
+      - name: Switch to data branch
+        run: |
+          git fetch origin data || git checkout --orphan data
+          git checkout data
+          git pull origin data || echo "Data branch does not exist, creating it."
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      - name: Install ObsPy
+        run: pip install obspy
+
+      - name: Run data retrieval script
+        run: python retrieve_seismic_data.py
+
+      - name: Commit & Push Data to Data Branch
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add seismic_data_*.mseed
+          git commit -m "Auto-fetch seismic data on $(date)" || echo "No changes to commit"
+          git push origin data
