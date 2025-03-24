@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensures all branches are fetched
+          fetch-depth: 0
 
       - name: Switch to data branch
         run: |
@@ -21,21 +21,14 @@ jobs:
           git checkout data
           git pull origin data || echo "Data branch does not exist, creating it."
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.9'
-
-      - name: Install ObsPy
-        run: pip install obspy
-
-      - name: Run data retrieval script
-        run: python retrieve_seismic_data.py
+      - name: Download Seismic Data from IRIS
+        run: |
+          wget "https://service.iris.edu/fdsnws/dataselect/1/query?net=EI&sta=DUB&cha=BHZ&start=2024-03-01T00:00:00&end=2024-03-02T00:00:00" -O seismic_data.mseed
 
       - name: Commit & Push Data to Data Branch
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add seismic_data_*.mseed
+          git add seismic_data.mseed
           git commit -m "Auto-fetch seismic data on $(date)" || echo "No changes to commit"
           git push origin data
