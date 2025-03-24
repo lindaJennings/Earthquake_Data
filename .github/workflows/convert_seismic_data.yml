@@ -38,14 +38,38 @@ jobs:
           from obspy import read
           import pandas as pd
 
-          # Read the MiniSEED file from the data branch
-          st = read("seismic_data.mseed")
+          try:
+              # Read the MiniSEED file
+              st = read("seismic_data.mseed")
 
-          # Convert to a Pandas DataFrame
-          df = st[0].to_dataframe()
+              # Check if the Stream has traces
+              if len(st) == 0:
+                  raise ValueError("No traces found in the MiniSEED file.")
 
-          # Save to CSV file
-          df.to_csv('seismic_data.csv', index=False)
+              # Extract data from the first trace
+              trace = st[0]
+              times = trace.times()  # Get time series
+              data = trace.data  # Get the seismic data
+              stats = trace.stats  # Get metadata (e.g., network, station, channel)
+
+              # Convert to a Pandas DataFrame
+              df = pd.DataFrame({
+                  "Time": times,
+                  "Data": data,
+                  "Network": stats.network,
+                  "Station": stats.station,
+                  "Channel": stats.channel,
+                  "Location": stats.location,
+              })
+
+              # Save to CSV file
+              df.to_csv('seismic_data.csv', index=False)
+
+              print(f"Conversion successful! {len(df)} rows written to 'seismic_data.csv'.")
+
+          except Exception as e:
+              print(f"Error: {e}")
+              exit(1)
           EOF
 
       # Step 6: Commit and push the converted CSV file to the data branch
