@@ -1,0 +1,60 @@
+name: Seismic Data Conversion
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  convert-mseed:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      # Step 3: Install required dependencies (ObsPy, pandas, etc.)
+      - name: Install dependencies
+        run: |
+          pip install obspy pandas
+
+      # Step 4: Checkout data branch
+      - name: Checkout data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data
+          git checkout data
+
+      # Step 5: Convert MiniSEED to CSV using Python (ObsPy)
+      - name: Convert MiniSEED to CSV
+        run: |
+          python <<EOF
+          from obspy import read
+          import pandas as pd
+
+          # Read the MiniSEED file from the data branch
+          st = read("seismic_data.mseed")
+
+          # Convert to a Pandas DataFrame
+          df = st[0].to_dataframe()
+
+          # Save to CSV file
+          df.to_csv('seismic_data.csv', index=False)
+          EOF
+
+      # Step 6: Commit and push the converted CSV file to the data branch
+      - name: Commit & Push Data to Data Branch
+        env:
+         GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add seismic_data.csv
+          git commit -m "Converted seismic data"
+          git push https://x-access-token:${GH_TOKEN}@github.com/lindaJennings/Earthquake_Data.git data
