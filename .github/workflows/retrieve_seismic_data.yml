@@ -26,9 +26,12 @@ jobs:
           wget "https://service.iris.edu/fdsnws/dataselect/1/query?net=EI&sta=DUB&cha=BHZ&start=2024-03-01T00:00:00&end=2024-03-02T00:00:00" -O seismic_data.mseed
 
       - name: Commit & Push Data to Data Branch
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add seismic_data.mseed
-          git commit -m "Auto-fetch seismic data on $(date)" || echo "No changes to commit"
-          git push origin data
+            git config --global user.name "github-actions"
+            git config --global user.email "actions@github.com"
+            git add seismic_data.mseed
+            git commit -m "Auto-fetch seismic data on $(date)" || echo "No changes to commit"
+            git push https://x-access-token:${GH_TOKEN}@github.com/lindaJennings/Earthquake_Data.git data
+  
