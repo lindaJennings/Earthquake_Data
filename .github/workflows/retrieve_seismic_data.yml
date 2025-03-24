@@ -23,7 +23,7 @@ jobs:
 
       - name: Download Seismic Data from IRIS
         run: |
-          wget "https://service.iris.edu/fdsnws/dataselect/1/query?net=EI&sta=DUB&cha=BHZ&start=2024-03-01T00:00:00&end=2024-03-02T00:00:00" -O seismic_data.mseed
+          wget "https://service.iris.edu/fdsnws/dataselect/1/query?net=EI&sta=DSB&cha=BHZ&start=2024-03-01T00:00:00&end=2024-03-02T00:00:00" -O seismic_data.mseed
 
       - name: Commit & Push Data to Data Branch
         env:
