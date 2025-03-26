@@ -1,29 +1,23 @@
-from obspy import UTCDateTime
-from obspy.clients.fdsn import Client
+import requests
 
-# Use IRIS or GFZ as the FDSN provider instead of INSN
-client = Client("IRIS")  # Alternative: Client("GFZ")
+# URL with correct parameters
+URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
 
-# Define the time range
-start_time = UTCDateTime("2024-03-01T00:00:00")
-end_time = UTCDateTime("2024-03-02T00:00:00")
+params = {
+    "net": "EI",
+    "sta": "DSB",
+    "cha": "BHZ",
+    "start": "2024-03-01T00:00:00",
+    "end": "2024-03-02T00:00:00"
+}
 
-# Define parameters for INSN stations (network="EI" for Irish Seismic Network)
-network = "EI"       # Irish Seismic Network (INSN) code
-station = "DUB"      # Example: Dublin station (change as needed)
-location = ""        # Usually empty
-channel = "BH?"      # Broadband high-gain channels (e.g., BHE, BHN, BHZ)
+# Send the GET request
+response = requests.get(URL, params=params)
 
-try:
-    # Fetch the waveform data
-    st = client.get_waveforms(network=network, station=station, location=location,
-                              channel=channel, starttime=start_time, endtime=end_time)
-    
-    # Save as MiniSEED file
-    filename = f"seismic_data_{start_time.date}.mseed"
-    st.write(filename, format="MSEED")
-
-    print(f"Seismic data successfully saved: {filename}")
-
-except Exception as e:
-    print(f"Error retrieving seismic data: {e}")
+# Save the file if successful
+if response.status_code == 200:
+    with open("seismic_data.mseed", "wb") as f:
+        f.write(response.content)
+    print("✅ Data downloaded successfully as seismic_data.mseed")
+else:
+    print(f"❌ Error {response.status_code}: {response.text}")
