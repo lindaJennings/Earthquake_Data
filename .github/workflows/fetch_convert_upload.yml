@@ -1,9 +1,9 @@
 name: Fetch, Convert, and Upload Seismic Data
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'  # Runs once a day at midnight UTC
+  workflow_dispatch:
 
 jobs:
   process_data:
