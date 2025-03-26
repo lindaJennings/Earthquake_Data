@@ -10,6 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Ensures that your repo is available for the workflow
+
+    # Debug step to check the directory and files
+      - name: Debug - List files in the repository
+        run: |
+          echo "Current working directory:"
+          pwd
+          echo "List of files:"
+          ls -al
+
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
