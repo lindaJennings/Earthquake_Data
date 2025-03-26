@@ -20,7 +20,7 @@ jobs:
 
       - name: Retrieve Seismic Data (MiniSEED)
         run: |
-          python fetch_data.py  # Fetches fresh data
+          python retrieve_seismic_data.py  # Fetches fresh data
 
       - name: Convert MiniSEED to JSON
         run: |
