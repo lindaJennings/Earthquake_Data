@@ -19,15 +19,12 @@ jobs:
         run: pip install pymongo obspy
 
       - name: Retrieve Seismic Data (MiniSEED)
-        run: |
-          python retrieve_seismic_data.py  # Fetches fresh data
+        run: python retrieve_seismic_data.py  # Fetches fresh data
 
       - name: Convert MiniSEED to JSON
-        run: |
-          python convert_to_json.py  # Converts to JSON
+        run: python convert_to_json.py  # Converts to JSON
 
       - name: Upload JSON to MongoDB
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: |
-          python upload_to_mongo.py  # Uploads JSON
+        run: python upload_to_mongo.py  # Uploads JSON
