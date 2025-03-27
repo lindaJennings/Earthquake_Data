@@ -1,0 +1,31 @@
+name: Fetch, Upload S3, Mongo
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Set up Python environment
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      # Install necessary dependencies
+      - name: Install dependencies
+        run: |
+          pip install requests boto3 pymongo
+
+      # Run the script to fetch data, upload to S3, and upload metadata to MongoDB
+      - name: Run fetch upload S3 Mongo script
+        run: |
+          python fetch_upload_s3_mongo.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
