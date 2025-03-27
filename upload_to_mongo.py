@@ -4,7 +4,7 @@ import pymongo
 
 # MongoDB connection
 MONGO_URI = os.getenv("MONGO_URI")  
-DB_NAME = "Earthquake Data"
+DB_NAME = "Earthquake_Data"
 COLLECTION_NAME = "DSB"
 
 client = pymongo.MongoClient(MONGO_URI)
