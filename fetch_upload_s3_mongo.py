@@ -55,7 +55,7 @@ def upload_metadata_to_mongo(metadata, mongo_uri, db_name, collection_name):
 if __name__ == "__main__":
     seismic_file = fetch_seismic_data()
     if seismic_file:
-        s3_url = upload_to_s3(seismic_file, "your-s3-bucket-name")
+        s3_url = upload_to_s3(seismic_file, "myseismicbucket")
         if s3_url:
             metadata = {
                 "station": "DSB",
