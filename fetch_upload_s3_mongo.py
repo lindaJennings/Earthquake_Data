@@ -5,9 +5,8 @@ import json
 from pymongo import MongoClient
 
 def fetch_seismic_data():
-# URL with correct parameters
+    # URL with correct parameters
     URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
-
     params = {
         "net": "EI",
         "sta": "DSB",
@@ -15,17 +14,19 @@ def fetch_seismic_data():
         "start": "2024-03-01T00:00:00",
         "end": "2024-03-02T00:00:00"
     }
-
-# Send the GET request
+    # Send the GET request
     response = requests.get(URL, params=params)
-
-# Save the file if successful
+    filename = "seismic_data.mseed"
+    # Save the file if successful
     if response.status_code == 200:
-        with open("seismic_data.mseed", "wb") as f:
-         f.write(response.content)
-        print("✅ Data downloaded successfully as seismic_data.mseed")
+        with open(filename, "wb") as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                f.write(chunk)
+        print("✅ Data downloaded successfully as", filename)
+        return filename  # Return the filename so subsequent functions can use it
     else:
-     print(f"❌ Error {response.status_code}: {response.text}")
+        print(f"❌ Error {response.status_code}: {response.text}")
+        return None
 
 def upload_to_s3(file_name, bucket_name, object_name=None):
     s3 = boto3.client("s3")
