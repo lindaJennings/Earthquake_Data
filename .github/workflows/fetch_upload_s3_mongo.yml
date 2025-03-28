@@ -10,6 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Debug step to check the directory and files
+      - name: Debug - List files in the repository
+        run: |
+          echo "Current working directory:"
+          pwd
+          echo "List of files:"
+          ls -al
+
       # Set up Python environment
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
