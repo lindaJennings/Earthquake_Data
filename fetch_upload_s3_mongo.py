@@ -42,10 +42,12 @@ def upload_to_s3(file_name, bucket_name, object_name=None):
         return None
 
 def upload_metadata_to_mongo(metadata, mongo_uri, db_name, collection_name):
-    client = MongoClient(mongo_uri)
-    db = client[db_name]
-    collection = db[collection_name]
+    from pymongo import MongoClient
     try:
+        # Force TLS and allow invalid certificates (for testing only)
+        client = MongoClient(mongo_uri, tls=True, tlsAllowInvalidCertificates=True)
+        db = client[db_name]
+        collection = db[collection_name]
         collection.insert_one(metadata)
         print("✅ Metadata uploaded to MongoDB")
     except Exception as e:
