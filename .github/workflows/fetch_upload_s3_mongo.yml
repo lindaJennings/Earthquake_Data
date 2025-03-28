@@ -10,19 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Set up Python environment
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      
-      # Debug step to check the directory and files
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Ensures that your repo is available for the workflow
+
+    # Debug step to check the directory and files
       - name: Debug - List files in the repository
         run: |
           echo "Current working directory:"
           pwd
           echo "List of files:"
           ls -al
+          
+      # Set up Python environment
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
       # Install necessary dependencies
       - name: Install dependencies
