@@ -64,8 +64,8 @@ if __name__ == "__main__":
                 "station": "DSB",
                 "network": "EI",
                 "channel": "BHZ",
-                "start_time": "2024-03-02T00:00:00",
-                "end_time": "2024-03-03T00:00:00",
+                "start_time": "2024-03-03T00:00:00",
+                "end_time": "2024-04-03T00:00:00",
                 "s3_url": s3_url
             }
             upload_metadata_to_mongo(metadata, os.getenv('MONGO_URI'), "seismic_db", "metadata_collection")
