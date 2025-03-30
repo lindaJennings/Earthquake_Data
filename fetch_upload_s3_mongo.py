@@ -16,8 +16,8 @@ def fetch_seismic_data():
         "net": "EI",
         "sta": "DSB",
         "cha": "BHZ",
-        "start": "2024-03-03T00:00:00",
-        "end": "2024-03-04T00:00:00"
+        "start": "2024-03-04T00:00:00",
+        "end": "2024-03-05T00:00:00"
     }
     # Send the GET request
     response = requests.get(URL, params=params)
@@ -69,8 +69,8 @@ if __name__ == "__main__":
                 "station": "DSB",
                 "network": "EI",
                 "channel": "BHZ",
-                "start_time": "2024-03-03T00:00:00",
-                "end_time": "2024-03-04T00:00:00",
+                "start_time": "2024-03-04T00:00:00",
+                "end_time": "2024-03-05T00:00:00",
                 "s3_url": s3_url
             }
             upload_metadata_to_mongo(metadata, os.getenv('MONGO_URI'), "seismic_db", "metadata_collection")
