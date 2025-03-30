@@ -4,8 +4,8 @@ import boto3
 import os
 
 # MongoDB Connection
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
+mongo_uri = st.secrets["mongodb"]["MONGO_URI"]
+client = MongoClient(mongo_uri)
 db = client["seismic_db"]
 collection = db["metadata_collection"]
 
