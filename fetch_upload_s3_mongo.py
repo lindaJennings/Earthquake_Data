@@ -9,15 +9,15 @@ def fetch_seismic_data():
     # Generate a timestamp (YYYYMMDD_HHMMSS)
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     filename = f"seismic_data_{timestamp}.mseed"
-    
+
     # URL with correct parameters
     URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
     params = {
         "net": "EI",
         "sta": "DSB",
         "cha": "BHZ",
-        "start": "2024-03-02T00:00:00",
-        "end": "2024-03-03T00:00:00"
+        "start": "2024-03-03T00:00:00",
+        "end": "2024-03-04T00:00:00"
     }
     # Send the GET request
     response = requests.get(URL, params=params)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 "network": "EI",
                 "channel": "BHZ",
                 "start_time": "2024-03-03T00:00:00",
-                "end_time": "2024-04-03T00:00:00",
+                "end_time": "2024-03-04T00:00:00",
                 "s3_url": s3_url
             }
             upload_metadata_to_mongo(metadata, os.getenv('MONGO_URI'), "seismic_db", "metadata_collection")
