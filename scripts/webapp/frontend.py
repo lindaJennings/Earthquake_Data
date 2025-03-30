@@ -10,7 +10,7 @@ db = client["seismic_db"]
 collection = db["metadata_collection"]
 
 # AWS S3 Connection
-S3_BUCKET = "your-s3-bucket-name"
+S3_BUCKET = "myseismicbucket"
 s3 = boto3.client("s3")
 
 # Streamlit UI
