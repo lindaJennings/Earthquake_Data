@@ -3,8 +3,13 @@ import os
 import boto3
 import json
 from pymongo import MongoClient
+from datetime import datetime
 
 def fetch_seismic_data():
+    # Generate a timestamp (YYYYMMDD_HHMMSS)
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    filename = f"seismic_data_{timestamp}.mseed"
+    
     # URL with correct parameters
     URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
     params = {
@@ -16,7 +21,7 @@ def fetch_seismic_data():
     }
     # Send the GET request
     response = requests.get(URL, params=params)
-    filename = "seismic_data.mseed"
+    
     # Save the file if successful
     if response.status_code == 200:
         with open(filename, "wb") as f:
