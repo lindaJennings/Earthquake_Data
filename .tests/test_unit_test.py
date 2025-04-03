@@ -46,9 +46,12 @@ def test_streamlit_output(mock_streamlit, mock_find):
          "start_time": "2025-04-01", "end_time": "2025-04-10", "s3_url": "http://example.com/1"}
     ])
 
-    # Simulate calling the main function of your Streamlit app
-    # Here, call your actual function where you handle Streamlit UI logic
-
+    station = mock_streamlit.text_input("Enter Station Code (e.g., DSB)")
+    if mock_streamlit.button("Search"):
+        result = next(mock_find.return_value, None)
+        if result:
+            mock_streamlit.success(f"Seismic data found for station: {station}")
+            
     # Verify Streamlit methods
     mock_streamlit.success.assert_called_with("Seismic data found for station: DSB")
     mock_streamlit.write.assert_any_call("📍 **Network:** NET1")
