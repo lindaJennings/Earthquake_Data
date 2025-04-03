@@ -2,3 +2,4 @@ streamlit
 pymongo
 requests
 boto3
+pytest
