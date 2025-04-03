@@ -20,19 +20,21 @@ st.title("Seismic Data Query & Download")
 station = st.text_input("Enter Station Code (e.g., DSB)")
 
 if st.button("Search"):
-    result = collection.find_one({"station": station})
+    results = collection.find({"station": station}).sort("start_time", -1)  # Sort by start_time in descending order
     
-    if result:
+    if results.count() > 0:
         st.success(f"Seismic data found for station: {station}")
         
-        # Display metadata
-        st.write(f"📍 **Network:** {result['network']}")
-        st.write(f"📡 **Channel:** {result['channel']}")
-        st.write(f"📅 **Start Time:** {result['start_time']}")
-        st.write(f"📅 **End Time:** {result['end_time']}")
-        
-        # Get S3 file link
-        s3_url = result["s3_url"]
-        st.markdown(f"📥 **Download Data:** [Click Here]({s3_url})", unsafe_allow_html=True)
+        # Loop through and display all results
+        for result in results:
+            st.write("---")  # Divider for clarity
+            st.write(f"📍 **Network:** {result['network']}")
+            st.write(f"📡 **Channel:** {result['channel']}")
+            st.write(f"📅 **Start Time:** {result['start_time']}")
+            st.write(f"📅 **End Time:** {result['end_time']}")
+            
+            # Get S3 file link
+            s3_url = result["s3_url"]
+            st.markdown(f"📥 **Download Data:** [Click Here]({s3_url})", unsafe_allow_html=True)
     else:
         st.error("No seismic data found for this station.")
