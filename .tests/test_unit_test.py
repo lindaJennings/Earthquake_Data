@@ -6,12 +6,12 @@ sys.path.append('.')
 
 @pytest.fixture
 def mock_find():
-    with patch("frontend.collection.find") as mock:
+    with patch("scripts.webapp.frontend.collection.find") as mock:
         yield mock
 
 @pytest.fixture
 def mock_streamlit():
-    with patch("frontend.st") as mock:
+    with patch("scripts.webapp.frontend.st") as mock:
         yield mock
 
 def test_find_station_results_sorted(mock_find):
