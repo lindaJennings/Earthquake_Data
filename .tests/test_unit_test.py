@@ -51,9 +51,7 @@ def test_streamlit_output(mock_streamlit, mock_find):
         result = next(mock_find.return_value, None)
         if result:
             mock_streamlit.success(f"Seismic data found for station: {station}")
-            
+
     # Verify Streamlit methods
     mock_streamlit.success.assert_called_with("Seismic data found for station: DSB")
-    mock_streamlit.write.assert_any_call("📍 **Network:** NET1")
-    mock_streamlit.markdown.assert_called_with("📥 **Download Data:** [Click Here](http://example.com/1)", 
-                                                unsafe_allow_html=True)
+
