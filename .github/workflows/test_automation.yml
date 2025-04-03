@@ -33,4 +33,4 @@ jobs:
       # Run tests
       - name: Run unit tests
         run: |
-          pytest --maxfail=3 --disable-warnings
+          pytest .tests --maxfail=3 --disable-warnings
