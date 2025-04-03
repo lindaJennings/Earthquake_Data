@@ -20,7 +20,7 @@ def fetch_seismic_data():
     URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
     params = {
         "net": "EI",
-        "sta": "*",
+        "sta": "DSB",
         "cha": "*",
         "start": "2024-03-02T00:00:00",
         "end": "2024-03-03T00:00:00"
@@ -64,13 +64,13 @@ def upload_metadata_to_mongo(metadata):
         print(f"❌ Error uploading to MongoDB: {e}")
     finally:
         client.close()
-        
+
 def process_and_store_seismic_data():
     seismic_file = fetch_seismic_data()
     if seismic_file:
         s3_url = upload_to_s3(seismic_file, BUCKET_NAME)
         if s3_url:
-            stations = ["DSB", "VAL", "IMAC","IMAY", "ITIP","IMIC", "IWEX", "ILTH","ILET", "IDGL"]  
+            stations = ["DSB"]  
             
             for station in stations:
                 metadata = {
