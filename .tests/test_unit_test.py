@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 import sys
 sys.path.append('.')
-from scripts.webapp.frontend import some_function
+
 
 @pytest.fixture
 def mock_find():

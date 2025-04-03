@@ -29,7 +29,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
-
+         
+      - name: Set Python Path
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+        
       # Run tests
       - name: Run unit tests
         run: |
