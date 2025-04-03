@@ -5,6 +5,12 @@ import json
 from pymongo import MongoClient
 from datetime import datetime
 
+# AWS and MongoDB Configuration
+BUCKET_NAME = "myseismicbucket"
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = "seismic_db"
+COLLECTION_NAME = "metadata_collection"
+
 def fetch_seismic_data():
     # Generate a timestamp (YYYYMMDD_HHMMSS)
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
@@ -14,10 +20,10 @@ def fetch_seismic_data():
     URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
     params = {
         "net": "EI",
-        "sta": "DSB",
-        "cha": "BHZ",
-        "start": "2024-03-04T00:00:00",
-        "end": "2024-03-05T00:00:00"
+        "sta": "*",
+        "cha": "*",
+        "start": "2024-03-02T00:00:00",
+        "end": "2024-03-03T00:00:00"
     }
     # Send the GET request
     response = requests.get(URL, params=params)
@@ -46,31 +52,36 @@ def upload_to_s3(file_name, bucket_name, object_name=None):
         print(f"❌ Error uploading to S3: {e}")
         return None
 
-def upload_metadata_to_mongo(metadata, mongo_uri, db_name, collection_name):
-    from pymongo import MongoClient
+def upload_metadata_to_mongo(metadata):
     try:
         # Force TLS and allow invalid certificates (for testing only)
-        client = MongoClient(mongo_uri, tls=True, tlsAllowInvalidCertificates=True)
-        db = client[db_name]
-        collection = db[collection_name]
+        client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
+        db = client[DB_NAME]
+        collection = db[COLLECTION_NAME]
         collection.insert_one(metadata)
-        print("✅ Metadata uploaded to MongoDB")
+        print(f"✅ Metadata {metadata['station']} uploaded to MongoDB")
     except Exception as e:
         print(f"❌ Error uploading to MongoDB: {e}")
     finally:
         client.close()
-
-if __name__ == "__main__":
+        
+def process_and_store_seismic_data():
     seismic_file = fetch_seismic_data()
     if seismic_file:
-        s3_url = upload_to_s3(seismic_file, "myseismicbucket")
+        s3_url = upload_to_s3(seismic_file, BUCKET_NAME)
         if s3_url:
-            metadata = {
-                "station": "DSB",
-                "network": "EI",
-                "channel": "BHZ",
-                "start_time": "2024-03-04T00:00:00",
-                "end_time": "2024-03-05T00:00:00",
-                "s3_url": s3_url
-            }
-            upload_metadata_to_mongo(metadata, os.getenv('MONGO_URI'), "seismic_db", "metadata_collection")
+            stations = ["DSB", "VAL", "IMAC","IMAY", "ITIP","IMIC", "IWEX", "ILTH","ILET", "IDGL"]  
+            
+            for station in stations:
+                metadata = {
+                    "station": station,
+                    "network": "EI",
+                    "channel": "*",
+                    "start_time": "2024-03-04T00:00:00",
+                    "end_time": "2024-03-05T00:00:00",
+                    "s3_url": s3_url
+                }
+                upload_metadata_to_mongo(metadata)
+
+if __name__ == "__main__":
+    process_and_store_seismic_data()
