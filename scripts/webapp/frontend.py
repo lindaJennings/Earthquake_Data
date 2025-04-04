@@ -21,8 +21,9 @@ station = st.text_input("Enter Station Code (e.g., DSB)")
 
 if st.button("Search"):
     results = collection.find({"station": station}).sort("start_time", -1)  # Sort by start_time in descending order
-    
-    if results.count() > 0:
+    results_list = list(results) 
+
+    if results_list:
         st.success(f"Seismic data found for station: {station}")
         
         # Loop through and display all results
