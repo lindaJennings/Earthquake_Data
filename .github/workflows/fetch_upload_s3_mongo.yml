@@ -11,9 +11,8 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4  # Ensures that your repo is available for the workflow
+        uses: actions/checkout@v4  
 
-    # Debug step to check the directory and files
       - name: Debug - List files in the repository
         run: |
           echo "Current working directory:"
@@ -21,18 +20,15 @@ jobs:
           echo "List of files:"
           ls -al
 
-      # Set up Python environment
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
-      # Install necessary dependencies
       - name: Install dependencies
         run: |
           pip install requests boto3 "pymongo[srv]"
 
-      # Run the script to fetch data, upload to S3, and upload metadata to MongoDB
       - name: Run fetch upload S3 Mongo script
         run: |
           python fetch_upload_s3_mongo.py
