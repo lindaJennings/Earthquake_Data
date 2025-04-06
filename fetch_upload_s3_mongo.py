@@ -5,18 +5,15 @@ import json
 from pymongo import MongoClient
 from datetime import datetime
 
-# AWS and MongoDB Configuration
 BUCKET_NAME = "myseismicbucket"
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = "seismic_db"
 COLLECTION_NAME = "metadata_collection"
 
 def fetch_seismic_data():
-    # Generate a timestamp (YYYYMMDD_HHMMSS)
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     filename = f"seismic_data_{timestamp}.mseed"
 
-    # URL with correct parameters
     URL = "https://service.iris.edu/fdsnws/dataselect/1/query"
     params = {
         "net": "EI",
@@ -25,16 +22,15 @@ def fetch_seismic_data():
         "start": "2024-03-06T00:00:00",
         "end": "2024-03-07T00:00:00"
     }
-    # Send the GET request
+
     response = requests.get(URL, params=params)
     
-    # Save the file if successful
     if response.status_code == 200:
         with open(filename, "wb") as f:
             for chunk in response.iter_content(chunk_size=1024):
                 f.write(chunk)
         print("✅ Data downloaded successfully as", filename)
-        return filename  # Return the filename so subsequent functions can use it
+        return filename 
     else:
         print(f"❌ Error {response.status_code}: {response.text}")
         return None
@@ -54,7 +50,6 @@ def upload_to_s3(file_name, bucket_name, object_name=None):
 
 def upload_metadata_to_mongo(metadata):
     try:
-        # Force TLS and allow invalid certificates (for testing only)
         client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
         db = client[DB_NAME]
         collection = db[COLLECTION_NAME]
