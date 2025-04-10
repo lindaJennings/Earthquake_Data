@@ -1,9 +1,9 @@
 FROM python:13
-WORKDIR ./
+WORKDIR /.
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY fetch_upload_s3_mongo.py
+COPY fetch_upload_s3_mongo.py ./
 
 CMD ["python", "fetch_upload_s3_mongo.py"]
