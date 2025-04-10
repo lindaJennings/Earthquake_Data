@@ -31,6 +31,9 @@ if st.button("Search"):
     }
 
     results = list(collection.find(query).sort("start_time", -1))
+   
+    if results:
+        st.success(f"✅ Found {len(results)} records for station: {station}")
     for i, result in enumerate(results):
             st.write("---")  
             st.subheader(f"📁 Record {i + 1}")
