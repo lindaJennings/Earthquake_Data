@@ -1,3 +1,4 @@
+from datetime import datetime
 import streamlit as st
 from pymongo import MongoClient
 import boto3
@@ -18,14 +19,19 @@ station = st.text_input("Enter Station Code (e.g., DSB)")
 start_time = st.date_input("Start date"); end_time = st.date_input("End date")
 
 if st.button("Search"):
-    st.write(f"🔍 Searching for seismic data at station: **{station}** ...")
-    
-    results = list(collection.find({"station": station}).sort("start_time", -1))
+    start_iso = datetime.combine(start_time, datetime.min.time()).isoformat()
+    end_iso = datetime.combine(end_time, datetime.max.time()).isoformat()
 
-    if results:
-        st.success(f"✅ Found {len(results)} records for station: {station}")
+    st.write(f"🔍 Searching for station **{station}** between **{start_iso}** and **{end_iso}** ...")
 
-        for i, result in enumerate(results):
+    query = {
+        "station": station,
+        "start_time": {"$gte": start_iso},
+        "end_time": {"$lte": end_iso}
+    }
+
+    results = list(collection.find(query).sort("start_time", -1))
+    for i, result in enumerate(results):
             st.write("---")  
             st.subheader(f"📁 Record {i + 1}")
             st.write(f"📍 **Network:** {result.get('network', 'N/A')}")
@@ -37,6 +43,6 @@ if st.button("Search"):
             if s3_url != "#":
                 st.markdown(f"📥 **Download Data:** [Click Here]({s3_url})", unsafe_allow_html=True)
             else:
-                st.warning("No S3 URL available for this record.")
+                st.warning("⚠️No S3 URL available for this record.")
     else:
         st.error("❌ No seismic data found for this station.")
