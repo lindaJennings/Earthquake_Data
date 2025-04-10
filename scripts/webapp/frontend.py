@@ -15,6 +15,8 @@ st.title("Seismic Data Query & Download")
 
 station = st.text_input("Enter Station Code (e.g., DSB)")
 
+start_time = st.date_input("Start date"); end_time = st.date_input("End date")
+
 if st.button("Search"):
     st.write(f"🔍 Searching for seismic data at station: **{station}** ...")
     
