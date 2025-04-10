@@ -34,7 +34,7 @@ if st.button("Search"):
    
     if results:
         st.success(f"✅ Found {len(results)} records for station: {station}")
-    for i, result in enumerate(results):
+        for i, result in enumerate(results):
             st.write("---")  
             st.subheader(f"📁 Record {i + 1}")
             st.write(f"📍 **Network:** {result.get('network', 'N/A')}")
