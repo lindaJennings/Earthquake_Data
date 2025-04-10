@@ -3,4 +3,4 @@ pymongo
 requests
 boto3
 pytest
-pyarrow=14.0.2
+pyarrow:14.0.2
