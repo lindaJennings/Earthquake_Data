@@ -1,4 +1,4 @@
-FROM python:13
+FROM python:alpine
 WORKDIR /.
 
 COPY requirements.txt ./
