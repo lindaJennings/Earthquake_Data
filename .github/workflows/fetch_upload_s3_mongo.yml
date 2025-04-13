@@ -1,8 +1,9 @@
 name: Fetch, Upload S3, Mongo
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+#Scheduled run disabled upon completion of experimental element
+  #schedule:
+    #- cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
